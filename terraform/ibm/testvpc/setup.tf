@@ -13,10 +13,18 @@ provider "ibm" {
   ibmcloud_api_key = "xH2kdCq4wQhTbdh_KLRUhApMqVX72tpNlmiVEPvA2lwA"
 }
 
+terraform {
+  backend "s3" {
+    bucket = "terraform-state-bucket"
+    endpoint = "s3.us-south.cloud-object-storage.appdomain.cloud"
+    region = "us-standard"
+    key    = "vpc/terraform.tfstate"
+    access_key = "32fc41dc30a446c2aa90ea979ed6ab95"
+    secret_key = "164bbd0e7d438ab7521e7b94f3643b0ddef58b85688ae5f3"
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+  }
+}
 
-
-
-# export IC_API_KEY="xH2kdCq4wQhTbdh_KLRUhApMqVX72tpNlmiVEPvA2lwA"
-# export IAAS_CLASSIC_USERNAME="terraform_test"
-# export IAAS_CLASSIC_API_KEY="38e1aba5dd1769091d9a76101a85990adead36386cc0d4bf5a2871ae05c92249"
 # # terraform plan
