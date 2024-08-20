@@ -1,0 +1,59 @@
+name: Terraform Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo_branch:
+        description: 'Branch of the repository'
+        required: true
+        default: 'main'
+      employeeId:
+        description: 'Employee ID'
+        required: true
+      environment:
+        description: 'Environment (dev, staging, prod)'
+        required: true
+        default: 'dev'
+      action:
+        description: 'Action to perform (init, plan, apply, destroy)'
+        required: true
+        default: 'plan'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      IC_API_KEY: ${{ secrets.IC_API_KEY_${{ github.event.inputs.environment }} }}
+      IAAS_CLASSIC_USERNAME: ${{ secrets.IAAS_CLASSIC_USERNAME_${{ github.event.inputs.environment }} }}
+      IAAS_CLASSIC_API_KEY: ${{ secrets.IAAS_CLASSIC_API_KEY_${{ github.event.inputs.environment }} }}
+      TF_VAR_employee_id: ${{ github.event.inputs.employeeId }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.repo_branch }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0  # Adjust this version as needed
+
+      - name: Initialize Terraform
+        working-directory: ${{ github.workspace }}/${{ github.event.inputs.environment }}
+        run: terraform init
+
+      - name: Terraform Plan
+        if: ${{ github.event.inputs.action == 'plan' }}
+        working-directory: ${{ github.workspace }}/${{ github.event.inputs.environment }}
+        run: terraform plan -var="employee_id=${{ github.event.inputs.employeeId }}"
+
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.action == 'apply' }}
+        working-directory: ${{ github.workspace }}/${{ github.event.inputs.environment }}
+        run: terraform apply -auto-approve -var="employee_id=${{ github.event.inputs.employeeId }}"
+
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        working-directory: ${{ github.workspace }}/${{ github.event.inputs.environment }}
+        run: terraform destroy -auto-approve -var="employee_id=${{ github.event.inputs.employeeId }}"
