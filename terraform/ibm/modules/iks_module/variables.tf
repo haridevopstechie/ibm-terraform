@@ -73,11 +73,6 @@ variable enable_public_albs {
     default     = true
 }
 
-variable autoscaling {
-    description = "Enable autoscaling "
-    type        = bool
-    default     = true
-}
 
 variable enable_private_albs {
     description = "Enable private albs"

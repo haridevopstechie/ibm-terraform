@@ -44,7 +44,6 @@ resource "ibm_container_vpc_worker_pool" "pool" {
     worker_pool_name   = var.pool_name
     flavor             = var.machine_type
     worker_count       = var.workers_per_zone
-    autoscale_enabled  = var.autoscaling
     dynamic zones {
         for_each = data.ibm_is_subnet.subnet
         content {
@@ -53,6 +52,15 @@ resource "ibm_container_vpc_worker_pool" "pool" {
         }
     }
 
+}
+
+resource "ibm_container_addons" "addons" {
+  depends_on = [ ibm_container_vpc_cluster.cluster ]
+  cluster = ibm_container_vpc_cluster.cluster.name
+  addons {
+    name    = "cluster-autoscaler"
+    version = "1.0.1"
+  }
 }
 
 resource "ibm_container_vpc_alb" "alb" {
