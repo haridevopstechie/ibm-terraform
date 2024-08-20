@@ -44,7 +44,7 @@ resource "ibm_container_vpc_worker_pool" "pool" {
     worker_pool_name   = var.pool_name
     flavor             = var.machine_type
     worker_count       = var.workers_per_zone
-
+    autoscale_enabled  = var.autoscaling
     dynamic zones {
         for_each = data.ibm_is_subnet.subnet
         content {
