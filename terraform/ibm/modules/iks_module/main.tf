@@ -59,7 +59,7 @@ resource "ibm_container_addons" "addons" {
   cluster = ibm_container_vpc_cluster.cluster.name
   addons {
     name    = "cluster-autoscaler"
-    version = "1.0.1"
+    version = "1.2.2"
   }
 }
 
