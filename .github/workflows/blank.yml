@@ -11,9 +11,9 @@ on:
         description: 'Employee ID'
         required: true
       environment:
-        description: 'Environment (dev, staging, prod)'
+        description: 'Environment (DEV, STAGE, PROD)'
         required: true
-        default: 'dev'
+        default: 'DEV'
       action:
         description: 'Action to perform (plan, apply, destroy)'
         required: true
