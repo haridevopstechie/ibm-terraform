@@ -12,5 +12,5 @@ module "vpc_kubernetes_cluster" {
   pool_name                       = "node-pool"
   tags                            = ["tag1", "tag2"]
   disable_public_service_endpoint = false
-  autoscaling                     = true
+  employee_id = "default"
 }
