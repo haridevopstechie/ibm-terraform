@@ -88,7 +88,7 @@ variable pool_name {
 }
 
 variable employee_id {
-    description = "Name of the Worker Pool"
+    description = "Employee ID"
     type        = string
     default     = "default"
 }
