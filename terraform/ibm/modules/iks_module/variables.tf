@@ -87,3 +87,9 @@ variable pool_name {
     default     = "default"
 }
 
+variable employee_id {
+    description = "Name of the Worker Pool"
+    type        = string
+    default     = "default"
+}
+
