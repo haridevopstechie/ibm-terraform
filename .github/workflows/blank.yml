@@ -39,21 +39,30 @@ jobs:
         with:
           terraform_version: 1.5.0  # Adjust this version as needed
 
-      - name: Initialize Terraform
-        working-directory: ${{ github.workspace }}/terraform/ibm/${{ github.event.inputs.environment }}
-        run: terraform init
-
       - name: Terraform Plan
         if: ${{ github.event.inputs.action == 'plan' }}
         working-directory: ${{ github.workspace }}/terraform/ibm/${{ github.event.inputs.environment }}
-        run: terraform plan -var="employee_id=${{ github.event.inputs.employeeId }}"
+        run: |
+          terraform init
+          terraform plan -var="employee_id=${{ github.event.inputs.employeeId }}" -out=plan.tfplan
+
+      - name: Print Terraform Plan (Aligned)
+        if: ${{ github.event.inputs.action == 'plan' }}
+        working-directory: ${{ github.workspace }}/terraform/ibm/${{ github.event.inputs.environment }}
+        run: |
+          terraform show -no-color plan.tfplan | column -t
+      
 
       - name: Terraform Apply
         if: ${{ github.event.inputs.action == 'apply' }}
         working-directory: ${{ github.workspace }}/terraform/ibm/${{ github.event.inputs.environment }}
-        run: terraform apply -auto-approve -var="employee_id=${{ github.event.inputs.employeeId }}"
+        run: |
+          terraform init
+          terraform apply -auto-approve -var="employee_id=${{ github.event.inputs.employeeId }}"
 
       - name: Terraform Destroy
         if: ${{ github.event.inputs.action == 'destroy' }}
         working-directory: ${{ github.workspace }}/terraform/ibm/${{ github.event.inputs.environment }}
-        run: terraform destroy -auto-approve -var="employee_id=${{ github.event.inputs.employeeId }}"
+        run: |
+          terraform init
+          terraform destroy -auto-approve -var="employee_id=${{ github.event.inputs.employeeId }}"
