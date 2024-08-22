@@ -11,9 +11,9 @@ on:
         description: 'Employee ID'
         required: true
       environment:
-        description: 'Environment (DEV, STAGE, PROD)'
+        description: 'Environment (dev, stage, prod)'
         required: true
-        default: 'DEV'
+        default: 'dev'
       action:
         description: 'Action to perform (plan, apply, destroy)'
         required: true
@@ -31,11 +31,11 @@ jobs:
 
       - name: Set environment variables
         run: |
-          if [ "${{ github.event.inputs.environment }}" = "PROD" ]; then
+          if [ "${{ github.event.inputs.environment }}" = "prod" ]; then
             echo "IC_API_KEY=${{ secrets.IC_API_KEY_PROD }}" >> $GITHUB_ENV
             echo "IAAS_CLASSIC_USERNAME=${{ secrets.IAAS_CLASSIC_USERNAME_PROD }}" >> $GITHUB_ENV
             echo "IAAS_CLASSIC_API_KEY=${{ secrets.IAAS_CLASSIC_API_KEY_PROD }}" >> $GITHUB_ENV
-          elif [ "${{ github.event.inputs.environment }}" = "STAGE" ]; then
+          elif [ "${{ github.event.inputs.environment }}" = "stage" ]; then
             echo "IC_API_KEY=${{ secrets.IC_API_KEY_STAGE }}" >> $GITHUB_ENV
             echo "IAAS_CLASSIC_USERNAME=${{ secrets.IAAS_CLASSIC_USERNAME_STAGE }}" >> $GITHUB_ENV
             echo "IAAS_CLASSIC_API_KEY=${{ secrets.IAAS_CLASSIC_API_KEY_STAGE }}" >> $GITHUB_ENV
