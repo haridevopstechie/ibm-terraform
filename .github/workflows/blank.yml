@@ -56,7 +56,7 @@ jobs:
         working-directory: ${{ github.workspace }}/terraform/ibm/${{ github.event.inputs.environment }}
         run: |
           terraform init
-          terraform plan -var="employee_id=${{ github.event.inputs.employeeId }}" -out=plan.tfplan
+          terraform plan  -out=plan.tfplan
 
       - name: Print Terraform Plan (Aligned)
         if: ${{ github.event.inputs.action == 'plan' }}
