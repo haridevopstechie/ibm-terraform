@@ -22,17 +22,29 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    env:
-      IC_API_KEY: ${{ secrets.IC_API_KEY_${{ github.event.inputs.environment }} }}
-      IAAS_CLASSIC_USERNAME: ${{ secrets.IAAS_CLASSIC_USERNAME_${{ github.event.inputs.environment }} }}
-      IAAS_CLASSIC_API_KEY: ${{ secrets.IAAS_CLASSIC_API_KEY_${{ github.event.inputs.environment }} }}
-      TF_VAR_employee_id: ${{ github.event.inputs.employeeId }}
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.repo_branch }}
+
+      - name: Set environment variables
+        run: |
+          if [ "${{ github.event.inputs.environment }}" = "PROD" ]; then
+            echo "IC_API_KEY=${{ secrets.IC_API_KEY_PROD }}" >> $GITHUB_ENV
+            echo "IAAS_CLASSIC_USERNAME=${{ secrets.IAAS_CLASSIC_USERNAME_PROD }}" >> $GITHUB_ENV
+            echo "IAAS_CLASSIC_API_KEY=${{ secrets.IAAS_CLASSIC_API_KEY_PROD }}" >> $GITHUB_ENV
+          elif [ "${{ github.event.inputs.environment }}" = "STAGE" ]; then
+            echo "IC_API_KEY=${{ secrets.IC_API_KEY_STAGE }}" >> $GITHUB_ENV
+            echo "IAAS_CLASSIC_USERNAME=${{ secrets.IAAS_CLASSIC_USERNAME_STAGE }}" >> $GITHUB_ENV
+            echo "IAAS_CLASSIC_API_KEY=${{ secrets.IAAS_CLASSIC_API_KEY_STAGE }}" >> $GITHUB_ENV
+          else
+            echo "IC_API_KEY=${{ secrets.IC_API_KEY_DEV }}" >> $GITHUB_ENV
+            echo "IAAS_CLASSIC_USERNAME=${{ secrets.IAAS_CLASSIC_USERNAME_DEV }}" >> $GITHUB_ENV
+            echo "IAAS_CLASSIC_API_KEY=${{ secrets.IAAS_CLASSIC_API_KEY_DEV }}" >> $GITHUB_ENV
+          fi
+    
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
