@@ -1,45 +1,39 @@
 name: Install ArgoCD Helm Chart to IKS
 
 on:
-  workflow_dispatch:
-    inputs:
-      cluster_name:
-        description: "The name of the IKS cluster"
-        required: true
-        default: ""
+  workflow_dispatch:
+    inputs:
+      cluster_name:
+        description: "The name of the IKS cluster"
+        required: true
+        default: ""
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Install Ibm cli
-      run: |
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Ibm cli
+        run: |
           curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-    - name: Install kubectl
-      run: |
-        curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-        chmod +x ./kubectl
-        sudo mv ./kubectl /usr/local/bin/kubectl
-
-
-    - name: Install Helm
-      run: |
-         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-    - name: IBM Cloud Login
-      run: |
-        ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }} -r ${{ secrets.REGION }} -g ${{ secrets.RESOURCE_GROUP }}
-
-    - name: Set Kubernetes context
-      run: |
+      - name: Install kubectl
+        run: |
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      - name: IBM Cloud Login
+        run: |
+         ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }} -r ${{ secrets.REGION }} -g ${{ secrets.RESOURCE_GROUP }}
+      - name: Set Kubernetes context
+        run: |
          ibmcloud ks cluster config --cluster ${{ github.event.inputs.cluster_name }}
-
-    - name: Verify connection to IKS
-      run: kubectl get nodes
-
-    - name: Deploy ArgoCD Helm chart
-      run: |
+      - name: Verify connection to IKS
+        run: kubectl get nodes
+      - name: Deploy ArgoCD Helm chart
+        run: |
           kubectl apply -f deploy/fluentd/fluentd.yaml
