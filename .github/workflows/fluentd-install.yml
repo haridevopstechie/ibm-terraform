@@ -15,37 +15,31 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      
-    - name: Install Ibm cli
-      run: |
-        curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
-
+    - name: Install Ibm cli
+      run: |
+          curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
     - name: Install kubectl
       run: |
-        curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
-        chmod +x ./kubectl
-        sudo mv ./kubectl /usr/local/bin/kubectl
+        curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x ./kubectl
+        sudo mv ./kubectl /usr/local/bin/kubectl
 
-    # Install Helm
+
     - name: Install Helm
       run: |
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-    # Authenticate to IBM Cloud
     - name: IBM Cloud Login
       run: |
-        ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }} -r ${{ secrets.REGION }} -g ${{ secrets.RESOURCE_GROUP }}
+        ibmcloud login --apikey ${{ secrets.IBM_CLOUD_API_KEY }} -r ${{ secrets.REGION }} -g ${{ secrets.RESOURCE_GROUP }}
 
-    # Set the Kubernetes context for IKS cluster using the cluster name input parameter
     - name: Set Kubernetes context
       run: |
-        ibmcloud ks cluster config --cluster ${{ github.event.inputs.cluster_name }}
+         ibmcloud ks cluster config --cluster ${{ github.event.inputs.cluster_name }}
 
-    # Verify the Kubernetes context and cluster
     - name: Verify connection to IKS
       run: kubectl get nodes
 
-    # Deploy ArgoCD using Helm
     - name: Deploy ArgoCD Helm chart
       run: |
-        kubectl apply -f deploy/fluentd/fluentd.yaml
+          kubectl apply -f deploy/fluentd/fluentd.yaml
