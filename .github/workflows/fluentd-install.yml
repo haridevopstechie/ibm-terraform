@@ -1,4 +1,4 @@
-name: Install ArgoCD Helm Chart to IKS
+name: Install FluentD to IKS
 
 on:
   workflow_dispatch:
